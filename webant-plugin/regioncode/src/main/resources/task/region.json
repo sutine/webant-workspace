@@ -1,0 +1,109 @@
+{
+  "id": "task_region",
+  "name": "行政区划代码",
+  "description": "采集行政区划代码网站",
+  "priority": 4,
+  "sites": [{
+    "id": "site_region",
+    "name": "行政区划代码",
+    "description": "行政区划代码",
+    "seeds": [
+      "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/index.html"
+    ],
+    "priority": 4,
+    "interval": 2000,
+    "incrementInterval": 600000,
+    "http": {
+      "method": "GET",
+      "connectTimeout": 15000,
+      "socketTimeout": 10000,
+      "encoding": "gb2312",
+      "retryTimes": 3,
+      "cycleRetryTimes": 8,
+      "contentType": "text/xml; charset=gb2312",
+      "proxy": false,
+      "headers": {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Cache-Control": "max-age=0",
+        "Connection": "keep-alive",
+        "Cookie": "_trs_uv=jfflgmds_6_hjxo; AD_RS_COOKIE=20080919",
+        "If-Modified-Since": "Fri, 05 May 2017 07:20:46 GMT",
+        "If-None-Match": "133f-54ec1ba6ad412-gzip",
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36"
+      }
+    },
+    "linkProvider": {
+      "className": "org.webant.worker.link.H2LinkProvider",
+      "params": {
+        "url": "jdbc:h2:./data/h2/webant;MODE=MYSQL",
+        "username": "webant",
+        "password": "webant",
+        "batch": 20
+      }
+    },
+    "processors": [
+      {
+        "regex": "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/index.html"
+      },
+      {
+        "regex": "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/\\d*.html",
+        "className": "org.webant.plugin.regioncode.processor.RegionProcessor",
+        "store": [
+          {
+            "className": "org.webant.worker.store.H2Store",
+            "params": {
+              "url": "jdbc:h2:./data/h2/data;MODE=MYSQL",
+              "username": "webant",
+              "password": "webant"
+            }
+          }
+        ]
+      },
+      {
+        "regex": "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/\\d*/\\d*.html",
+        "className": "org.webant.plugin.regioncode.processor.RegionProcessor",
+        "store": [
+          {
+            "className": "org.webant.worker.store.H2Store",
+            "params": {
+              "url": "jdbc:h2:./data/h2/data;MODE=MYSQL",
+              "username": "webant",
+              "password": "webant"
+            }
+          }
+        ]
+      },
+      {
+        "regex": "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/\\d*/\\d*/\\d*.html",
+        "className": "org.webant.plugin.regioncode.processor.RegionProcessor",
+        "store": [
+          {
+            "className": "org.webant.worker.store.H2Store",
+            "params": {
+              "url": "jdbc:h2:./data/h2/data;MODE=MYSQL",
+              "username": "webant",
+              "password": "webant"
+            }
+          }
+        ]
+      },
+      {
+        "regex": "http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2016/\\d*/\\d*/\\d*/\\d*.html",
+        "className": "org.webant.plugin.regioncode.processor.RegionProcessor",
+        "store": [
+          {
+            "className": "org.webant.worker.store.H2Store",
+            "params": {
+              "url": "jdbc:h2:./data/h2/data;MODE=MYSQL",
+              "username": "webant",
+              "password": "webant"
+            }
+          }
+        ]
+      }
+    ]
+}]
+}
